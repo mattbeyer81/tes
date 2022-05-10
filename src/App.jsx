@@ -1,46 +1,61 @@
 import {useEffect, useState} from 'react'
+
 import reactLogo from './images/react-logo.svg'
 import tesLogo from './images/tes-logo.svg'
 import nodeLogo from './images/nodejs-logo.svg'
 import './App.css'
+import Table from './components/Table'
+import UniversityCard from './components/UniversityCard'
+
+import {uniApiUrl, countryData} from './CONSTANTS';
 
 function App() {
     const [countries, setCountries] = useState([])
     const [country, setCountry] = useState([])
     const [universities, setUniversities] = useState([])
+    const [openModal, setOpenModal] = useState(false)
+    const [selectedUniversity, setSelectedUniversity] = useState(null)
 
     const getCountries = async () => {
-        fetch('https://restcountries.com/v3.1/all')
-            .then(response => response.json())
-            .then(countries => {
-                setCountries(countries);
-            });
+        setCountries(countryData);
     };
 
     const getUniversities = async query => {
-        fetch(`http://universities.hipolabs.com/search?country=${encodeURIComponent(query)}`)
+        fetch(`${uniApiUrl}${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(universities => setUniversities(universities));
     };
 
     useEffect(() => {
-        if (countries.length === 0) {
-            getCountries();
-        }
+        getCountries();
     }, [countries]);
 
-    const search = event => {
-        event.preventDefault();
+    const search = e => {
+        e.preventDefault();
         getUniversities(country);
     };
 
-    const onCountryChange = event => setCountry(event.target.value);
+    const onCountryChange = e => setCountry(e.target.value);
+
+    const selectUniversity = (name) => {
+        const university = universities.find(uni => uni.name === name);
+        if (university) {
+            setOpenModal(true);
+            setSelectedUniversity(university);
+        }
+    };
+
+    const closeModal = () => {
+        setOpenModal(false);
+        setSelectedUniversity(null);
+    }
 
     return (
         <div className="App">
+            <img src={tesLogo} className="App-logo" alt="Tes logo"/>
             <header className="App-header container">
-                <img src={tesLogo} className="App-logo" alt="Tes logo"/>
                 <img src={reactLogo} className="App-logo-react" alt="React logo"/>
+                <h1 className="App-header title">University Challenge</h1>
                 <img src={nodeLogo} className="App-logo-nodejs" alt="NodeJs logo"/>
             </header>
             <section>
@@ -50,12 +65,13 @@ function App() {
                            id="exampleDataList"
                            onChange={onCountryChange}
                            placeholder="Type to search..."/>
-                    <button className="btn btn-outline-secondary" type="button" id="button-addon2"
+                    <button className="search-button" type="button" id="button-addon2"
                             onClick={search}>Search
                     </button>
 
                     <datalist id="datalistOptions">
                         {countries.map(countryItem => (<option
+                            key={countryItem.name.official}
                             value={countryItem.name.common}
                             selected={countryItem.name.common === country ? 'selected' : ''}>
                             {countryItem.name.common}
@@ -63,28 +79,14 @@ function App() {
                     </datalist>
                 </div>
 
-                <p>Number of countries: {countries.length}</p>
-                <p>Number of universities in <strong>{country}</strong>: {universities.length}</p>
+                <p>Total number of countries: {countries.length}</p>
+                {universities.length > 0 && <p>Number of universities in <strong>{country}</strong>: {universities.length}</p>}
             </section>
             <section>
-                <table className="table table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Web Page</th>
-                        <th scope="col">Options</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {universities.map(({name, web_pages: [url]}) => (
-                        <tr>
-                            <td>{name}</td>
-                            <td><a href={url}>{url}</a></td>
-                            <td>Add review</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                {openModal && selectedUniversity && <UniversityCard university={selectedUniversity} closeModal={closeModal}/>}
+            </section>
+            <section>
+                {universities.length > 0 && !openModal && <Table universities={universities} selectUniversity={selectUniversity} />}
             </section>
         </div>
     )
