@@ -9,7 +9,7 @@ import UniversityCard from './components/UniversityCard';
 
 import { uniApiUrl, countryData } from './CONSTANTS';
 
-function App() {
+const App = () => {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState([]);
   const [universities, setUniversities] = useState([]);
@@ -28,7 +28,7 @@ function App() {
 
   useEffect(() => {
     getCountries();
-  }, [countries]);
+  }, []);
 
   const search = (e) => {
     e.preventDefault();
@@ -116,6 +116,6 @@ function App() {
       </section>
     </div>
   );
-}
+};
 
 export default App;

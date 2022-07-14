@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Table({ universities, selectUniversity }) {
+const Table = ({ universities, selectUniversity }) => {
   return (
     <table className="table table-hover">
       <thead>
@@ -27,6 +27,6 @@ function Table({ universities, selectUniversity }) {
       </tbody>
     </table>
   );
-}
+};
 
 export default Table;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function UniversityCard({ university, closeModal }) {
+const UniversityCard = ({ university, closeModal }) => {
   const { name, web_pages: webPages, country } = university;
   const [writeReview, setWriteReview] = useState(false);
 
@@ -36,6 +36,6 @@ function UniversityCard({ university, closeModal }) {
         )}
     </div>
   );
-}
+};
 
 export default UniversityCard;
