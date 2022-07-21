@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["es6", "DOM"],
+        "types": ["jest", "node"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noEmit": false,
+        "resolveJsonModule": true,
+        "outDir": "build",
+        "allowJs": true,
+    },
+    "include": ["server/**/*.ts"]
+}
